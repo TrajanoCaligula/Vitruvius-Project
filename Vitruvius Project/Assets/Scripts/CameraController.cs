@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/*
+ * TODO: Check comments && keyboard options for pitch rotation
+ */
 public class CameraController : MonoBehaviour
 {
     public static CameraController instance;
@@ -8,35 +11,45 @@ public class CameraController : MonoBehaviour
     public Transform cameraTransform;
     public Transform followTransform;
 
-    public float normalSpeed;
-    public float fastSpeed;
-    private float movementSpeed;
-    public float movementTime;
-    public float rotationAmount;
-    public Vector3 zoomAmount;
+    // Velocidad de Movimiento
+    public float normalSpeed = 0.5f; // Velocidad normal de movimiento
+    public float fastSpeed = 2f; // Velocidad rápida al presionar Shift
+    public float movementTime = 5f; // Tiempo de interpolación para el movimiento
 
-    public float distanceFromTerrain = 5f;
+    // Rotación
+    public float rotationAmount = 0.5f; // Cantidad de rotación con teclas Q y E
+    public float minPitch = 5f; // Ángulo mínimo de inclinación
+    public float maxPitch = 60f; // Ángulo máximo de inclinación
 
+    // Zoom
+    public float minZoom = 5f; // Distancia mínima de la cámara
+    public float maxZoom = 50f; // Distancia máxima de la cámara
+    private Vector3 zoomAmount = new Vector3(0, 1, 1); // Cantidad de zoom
+
+    private float movementSpeed; // Velocidad de movimiento actual
+    private Vector3 newPosition; // Nueva posición de la cámara
     private Vector3 dragStartPosition;
     private Vector3 dragCurrentPosition;
     private Vector3 rotateStartPosition;
     private Vector3 rotateCurrentPosition;
 
-    private Vector3 newPosition;
-    private Quaternion newRotation;
-    private Vector3 newZoom;
+    private float pitch = 30f;  // Inclinación vertical
+    private float yaw = 0f;     // Rotación horizontal
+    private float cameraDistance; // Distancia de la cámara al Camera Rig
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         terrain = Terrain.activeTerrain;
         instance = this;
         newPosition = transform.position;
-        newRotation = transform.rotation;
-        newZoom = cameraTransform.localPosition;
+
+        yaw = transform.rotation.eulerAngles.y;
+        pitch = 30f; // Ángulo inicial de inclinación
+
+        // Se calcula la distancia inicial de la cámara al camera rig
+        cameraDistance = Vector3.Distance(cameraTransform.position, transform.position);
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (followTransform != null)
@@ -56,12 +69,8 @@ public class CameraController : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             Plane plane = new Plane(Vector3.up, Vector3.zero);
-
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-            float entry;
-
-            if (plane.Raycast(ray, out entry))
+            if (plane.Raycast(ray, out float entry))
             {
                 dragStartPosition = ray.GetPoint(entry);
             }
@@ -69,22 +78,16 @@ public class CameraController : MonoBehaviour
         if (Input.GetMouseButton(0))
         {
             Plane plane = new Plane(Vector3.up, Vector3.zero);
-
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-            float entry;
-
-            if (plane.Raycast(ray, out entry))
+            if (plane.Raycast(ray, out float entry))
             {
                 dragCurrentPosition = ray.GetPoint(entry);
-
                 newPosition = transform.position + dragStartPosition - dragCurrentPosition;
             }
         }
-        // KeyBoard
-        if (Input.GetKey(KeyCode.LeftShift)) movementSpeed = fastSpeed;
 
-        else movementSpeed = normalSpeed;
+        // KeyBoard
+        movementSpeed = Input.GetKey(KeyCode.LeftShift) ? fastSpeed : normalSpeed;
 
         if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
         {
@@ -96,19 +99,23 @@ public class CameraController : MonoBehaviour
             newPosition += (transform.forward * -movementSpeed);
             followTransform = null;
         }
+            
         if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
         {
             newPosition += (transform.right * movementSpeed);
             followTransform = null;
         }
+            
         if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
         {
             newPosition += (transform.right * -movementSpeed);
             followTransform = null;
         }
+            
 
         if (followTransform == null) transform.position = Vector3.Lerp(transform.position, newPosition, Time.deltaTime * movementTime);
     }
+
     void HandleRotationInput()
     {
         // Mouse
@@ -119,24 +126,33 @@ public class CameraController : MonoBehaviour
         if (Input.GetMouseButton(2))
         {
             rotateCurrentPosition = Input.mousePosition;
-
             Vector3 difference = rotateStartPosition - rotateCurrentPosition;
-
             rotateStartPosition = rotateCurrentPosition;
 
-            newRotation *= Quaternion.Euler(Vector3.up * (-difference.x / 5f));
-        }
-        // KeyBoard
-        if (Input.GetKey(KeyCode.Q))
-        {
-            newRotation *= Quaternion.Euler(Vector3.up * rotationAmount);
-        }
-        if (Input.GetKey(KeyCode.E))
-        {
-            newRotation *= Quaternion.Euler(Vector3.up * -rotationAmount);
+            yaw -= difference.x * 0.2f;
+            pitch += difference.y * 0.2f;
+
+            pitch = Mathf.Clamp(pitch, minPitch, maxPitch);
         }
 
-        transform.rotation = Quaternion.Lerp(transform.rotation, newRotation, Time.deltaTime * movementTime);
+        // KeyBoard
+        if (Input.GetKey(KeyCode.Q))
+            yaw += rotationAmount;
+        if (Input.GetKey(KeyCode.E))
+            yaw -= rotationAmount;
+
+        // Aplicar la rotación en yaw (horizontal) al Camera Rig
+        transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(0, yaw, 0), Time.deltaTime * movementTime);
+
+        // Calcular la nueva posición de la cámara en base al pitch
+        float pitchRadians = pitch * Mathf.Deg2Rad;
+        Vector3 cameraOffset = new Vector3(0, Mathf.Sin(pitchRadians) * cameraDistance, -Mathf.Cos(pitchRadians) * cameraDistance);
+
+        cameraTransform.localPosition = Vector3.Lerp(cameraTransform.localPosition, cameraOffset, Time.deltaTime * movementTime);
+
+        // Ajustar la rotación de la cámara para que mire hacia el centro del arco
+        Quaternion targetRotation = Quaternion.Euler(pitch, 0, 0);
+        cameraTransform.localRotation = Quaternion.Lerp(cameraTransform.localRotation, targetRotation, Time.deltaTime * movementTime);
     }
 
     void HandleZoomInput()
@@ -144,18 +160,25 @@ public class CameraController : MonoBehaviour
         // Mouse
         if (Input.mouseScrollDelta.y != 0)
         {
-            newZoom += Input.mouseScrollDelta.y * zoomAmount * 10;
+            cameraDistance -= Input.mouseScrollDelta.y * zoomAmount.z * 10;
+            cameraDistance = Mathf.Clamp(cameraDistance, minZoom, maxZoom); // Limitar el zoom
         }
+
         // KeyBoard
         if (Input.GetKey(KeyCode.Z))
         {
-            newZoom += zoomAmount;
+            cameraDistance -= zoomAmount.z;
         }
         if (Input.GetKey(KeyCode.X))
         {
-            newZoom -= zoomAmount;
+            cameraDistance += zoomAmount.z;
         }
 
-        cameraTransform.localPosition = Vector3.Lerp(cameraTransform.localPosition, newZoom, Time.deltaTime * movementTime);
+        cameraDistance = Mathf.Clamp(cameraDistance, minZoom, maxZoom);
+
+        // Se actualiza la posición de la cámara manteniendo su ángulo
+        float pitchRadians = pitch * Mathf.Deg2Rad;
+        Vector3 cameraOffset = new Vector3(0, Mathf.Sin(pitchRadians) * cameraDistance, -Mathf.Cos(pitchRadians) * cameraDistance);
+        cameraTransform.localPosition = Vector3.Lerp(cameraTransform.localPosition, cameraOffset, Time.deltaTime * movementTime);
     }
 }
