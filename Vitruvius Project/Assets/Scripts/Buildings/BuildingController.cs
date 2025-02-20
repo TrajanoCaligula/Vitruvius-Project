@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class BuildingController : MonoBehaviour
@@ -5,7 +6,7 @@ public class BuildingController : MonoBehaviour
     private float fromLastClick = -1f;
     private float doubleClickRange = 0.3f;
 
-    private bool buildComplete = false;
+    private bool constructionComplete = false;
 
     void Start()
     {
@@ -14,13 +15,15 @@ public class BuildingController : MonoBehaviour
 
     void Update()
     {
-        if (buildComplete)
-        {
-
-        }else
+        if (constructionComplete)
         {
 
         }
+    }
+
+    private void checkConstructionProcess()
+    {
+        throw new NotImplementedException();
     }
 
     public void OnMouseDown()
@@ -35,5 +38,10 @@ public class BuildingController : MonoBehaviour
         }
 
         fromLastClick = Time.time;
+    }
+
+    public void destroyBuilding()
+    {
+        Destroy(this);
     }
 }

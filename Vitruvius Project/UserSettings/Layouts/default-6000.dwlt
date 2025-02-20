@@ -19,7 +19,7 @@ MonoBehaviour:
     width: 2560
     height: 1357.3334
   m_ShowMode: 4
-  m_Title: Scene
+  m_Title: Game
   m_RootView: {fileID: 2}
   m_MinSize: {x: 875, y: 300}
   m_MaxSize: {x: 10000, y: 10000}
@@ -236,7 +236,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 1
   m_Script: {fileID: 12006, guid: 0000000000000000e000000000000000, type: 0}
-  m_Name: ProjectBrowser
+  m_Name: ConsoleWindow
   m_EditorClassIdentifier: 
   m_Children: []
   m_Position:
@@ -245,14 +245,14 @@ MonoBehaviour:
     y: 671.3333
     width: 1911.3334
     height: 630.00006
-  m_MinSize: {x: 231, y: 276}
-  m_MaxSize: {x: 10001, y: 10026}
-  m_ActualView: {fileID: 12}
+  m_MinSize: {x: 101, y: 126}
+  m_MaxSize: {x: 4001, y: 4026}
+  m_ActualView: {fileID: 16}
   m_Panes:
   - {fileID: 12}
   - {fileID: 16}
-  m_Selected: 0
-  m_LastSelected: 1
+  m_Selected: 1
+  m_LastSelected: 0
 --- !u!114 &11
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -301,7 +301,7 @@ MonoBehaviour:
   m_Pos:
     serializedVersion: 2
     x: 0
-    y: 695.3333
+    y: 750
     width: 1910.3334
     height: 604.00006
   m_SerializedDataModeController:
@@ -326,7 +326,7 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets
+    - Assets/Scripts/Buildings
     m_Globs: []
     m_ProductIds: 
     m_AnyWithAssetOrigin: 0
@@ -336,16 +336,16 @@ MonoBehaviour:
   m_ViewMode: 1
   m_StartGridSize: 64
   m_LastFolders:
-  - Assets
+  - Assets/Scripts/Buildings
   m_LastFoldersGridSize: -1
   m_LastProjectPath: C:\Users\jaume\Desktop\Vitruvius-Project\Vitruvius Project
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
     scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: 60a50000
-    m_LastClickedID: 42336
-    m_ExpandedIDs: 0000000014a5000016a50000
+    m_SelectedIDs: f6b20000
+    m_LastClickedID: 45814
+    m_ExpandedIDs: 0000000014a5000016a50000e8a60000eaa60000eca6000000ca9a3bffffff7f
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -400,8 +400,8 @@ MonoBehaviour:
       m_Icon: {fileID: 0}
       m_ResourceFile: 
   m_ListAreaState:
-    m_SelectedInstanceIDs: 
-    m_LastClickedInstanceID: 0
+    m_SelectedInstanceIDs: 14ecffff
+    m_LastClickedInstanceID: -5100
     m_HadKeyboardFocusLastEvent: 1
     m_ExpandedInstanceIDs: c6230000c25a0000165d000000000000a84b0000
     m_RenameOverlay:
@@ -454,7 +454,7 @@ MonoBehaviour:
   m_Pos:
     serializedVersion: 2
     x: 0
-    y: 24
+    y: 78.66667
     width: 417
     height: 645.3333
   m_SerializedDataModeController:
@@ -471,9 +471,9 @@ MonoBehaviour:
   m_SceneHierarchy:
     m_TreeViewState:
       scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: 
-      m_LastClickedID: 0
-      m_ExpandedIDs: 20fbffff
+      m_SelectedIDs: 14ecffff
+      m_LastClickedID: -5100
+      m_ExpandedIDs: 9a9ffeff6c11ffffce81ffffbec2ffff4cdeffff14ecffff20fbffffc4a40000
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -519,8 +519,8 @@ MonoBehaviour:
     m_TextWithWhitespace: "Scene\u200B"
   m_Pos:
     serializedVersion: 2
-    x: 419
-    y: 24
+    x: 418
+    y: 78.66667
     width: 1491.3334
     height: 645.3333
   m_SerializedDataModeController:
@@ -884,7 +884,7 @@ MonoBehaviour:
       sizeOverridden: 0
     - dockPosition: 0
       containerId: overlay-toolbar__left
-      displayed: 1
+      displayed: 0
       id: Terrain Tools
       index: 0
       contents: '{"m_Layout":4,"m_Collapsed":false,"m_Floating":false,"m_FloatingSnapOffset":{"x":24.0,"y":0.0},"m_SnapOffsetDelta":{"x":0.0,"y":0.0},"m_FloatingSnapCorner":0,"m_Size":{"x":0.0,"y":0.0},"m_SizeOverridden":false}'
@@ -1021,9 +1021,9 @@ MonoBehaviour:
   m_AudioPlay: 0
   m_DebugDrawModesUseInteractiveLightBakingData: 0
   m_Position:
-    m_Target: {x: 47.92812, y: 4.2803884, z: 24.423641}
+    m_Target: {x: 41.984375, y: 4.1914415, z: 15.39939}
     speed: 2
-    m_Value: {x: 47.92812, y: 4.2803884, z: 24.423641}
+    m_Value: {x: 41.984375, y: 4.1914415, z: 15.39939}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -1069,13 +1069,13 @@ MonoBehaviour:
     m_GridAxis: 1
     m_gridOpacity: 0.5
   m_Rotation:
-    m_Target: {x: 0.37395728, y: -0.02318248, z: 0.009350861, w: 0.927109}
+    m_Target: {x: 0.31965572, y: 0.013265137, z: -0.0044756243, w: 0.9474336}
     speed: 2
-    m_Value: {x: -0.37395728, y: 0.023182482, z: -0.009350861, w: -0.927109}
+    m_Value: {x: 0.31965473, y: 0.013265096, z: -0.0044756103, w: 0.9474307}
   m_Size:
-    m_Target: 25.594774
+    m_Target: 12.619946
     speed: 2
-    m_Value: 25.594774
+    m_Value: 12.619946
   m_Ortho:
     m_Target: 0
     speed: 2
@@ -1267,8 +1267,8 @@ MonoBehaviour:
     m_TextWithWhitespace: "Inspector\u200B"
   m_Pos:
     serializedVersion: 2
-    x: 1912.3334
-    y: 24
+    x: 1911.3334
+    y: 78.66667
     width: 647.6666
     height: 1275.3334
   m_SerializedDataModeController:
