@@ -22,8 +22,8 @@ public class CameraController : MonoBehaviour
     public float maxPitch = 60f; // Ángulo máximo de inclinación
 
     // Zoom
-    public float minZoom = 5f; // Distancia mínima de la cámara
-    public float maxZoom = 50f; // Distancia máxima de la cámara
+    public float minZoom = 2f; // Distancia mínima de la cámara
+    public float maxZoom = 500f; // Distancia máxima de la cámara
     private Vector3 zoomAmount = new Vector3(0, 1, 1); // Cantidad de zoom
 
     private float movementSpeed; // Velocidad de movimiento actual
@@ -55,7 +55,11 @@ public class CameraController : MonoBehaviour
         if (followTransform != null)
         {
             transform.position = Vector3.Lerp(transform.position, followTransform.position, Time.deltaTime * movementTime);
+            newPosition = transform.position;
             if (Input.GetKeyDown(KeyCode.Escape)) followTransform = null;
+        } else
+        {
+
         }
 
         HandleMovementInput();
@@ -161,7 +165,6 @@ public class CameraController : MonoBehaviour
         if (Input.mouseScrollDelta.y != 0)
         {
             cameraDistance -= Input.mouseScrollDelta.y * zoomAmount.z * 10;
-            cameraDistance = Mathf.Clamp(cameraDistance, minZoom, maxZoom); // Limitar el zoom
         }
 
         // KeyBoard
