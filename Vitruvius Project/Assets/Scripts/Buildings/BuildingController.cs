@@ -17,12 +17,13 @@ public class BuildingController : MonoBehaviour
     {
         if (constructionComplete)
         {
-
+            
         }
     }
 
     private void checkConstructionProcess()
     {
+        // TODO
         throw new NotImplementedException();
     }
 
@@ -42,6 +43,7 @@ public class BuildingController : MonoBehaviour
 
     public void destroyBuilding()
     {
+        //TODO
         Destroy(this);
     }
 }

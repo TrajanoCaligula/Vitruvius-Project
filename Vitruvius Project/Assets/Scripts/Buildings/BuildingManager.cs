@@ -44,6 +44,9 @@ public class BuildingManager : MonoBehaviour
             }
         }
         else if (Input.GetKey(KeyCode.Alpha1)) selectedObject(0);
+        else if (Input.GetKey(KeyCode.Alpha2)) selectedObject(1);
+        else if (Input.GetKey(KeyCode.Alpha3)) selectedObject(2);
+
         if (Input.GetKey(KeyCode.Escape) || Input.GetMouseButton(1)) selectedObject(-1);
         if (Input.GetKeyDown(KeyCode.LeftAlt)) snapIsActive = !snapIsActive;
     }
