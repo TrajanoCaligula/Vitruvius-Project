@@ -844,9 +844,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65bd49233b0d28b43b1e958123826a8c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  SECONDS_PER_DAY: 100
+  INITIAL_YEAR: 933
   clock: 0
+  deltaTime: 0
   gameSpeed: 0
   baseAgentSpeed: 3.5
+  day: 1
+  month: 1
+  year: 933
 --- !u!4 &1792834053
 Transform:
   m_ObjectHideFlags: 0

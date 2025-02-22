@@ -42,6 +42,7 @@ public class HumanController : MonoBehaviour
         // TESTING
         state = State.Idle;
         timerLastChange = 0f;
+        agent.acceleration = 10000f;        // Makes the speed change instantly
     }
 
     void Update()
@@ -49,7 +50,7 @@ public class HumanController : MonoBehaviour
         if (TimeManager.Instance != null && !TimeManager.Instance.isGamePaused())
         {
             // Time control
-            timerLastChange += TimeManager.Instance.getClock();
+            timerLastChange += TimeManager.Instance.getDeltaTime();
             if (timerLastChange >= timerStateChange)
             {
                 timerLastChange = 0f;

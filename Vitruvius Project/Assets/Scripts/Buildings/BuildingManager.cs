@@ -32,23 +32,34 @@ public class BuildingManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // If we selected an object to build
         if (objectPreview != null)
         {
+            // Lock the position if we are rotating the building
             if (!rotatingObject) objectPreview.transform.position = targetPosition;
 
             rotateBuilding();
 
-            if (Input.GetMouseButtonDown(0))
+            // Right click to confirm construction
+            if (availablePosition() && Input.GetMouseButtonDown(0))
             {
                 confirmObject();
             }
         }
-        else if (Input.GetKey(KeyCode.Alpha1)) selectedObject(0);
-        else if (Input.GetKey(KeyCode.Alpha2)) selectedObject(1);
-        else if (Input.GetKey(KeyCode.Alpha3)) selectedObject(2);
+
+        else if (Input.GetKey(KeyCode.J)) selectedObject(0);
+        else if (Input.GetKey(KeyCode.K)) selectedObject(1);
+        else if (Input.GetKey(KeyCode.L)) selectedObject(2);
 
         if (Input.GetKey(KeyCode.Escape) || Input.GetMouseButton(1)) selectedObject(-1);
         if (Input.GetKeyDown(KeyCode.LeftAlt)) snapIsActive = !snapIsActive;
+    }
+
+
+    // TODO: Check the correct positioning of the building, checks the layers of both the realworld and building preview layers of the prefab
+    private bool availablePosition()
+    {
+        return true;
     }
 
     // Checks the position where the mouse is in reference to the terrain (thanks to layerMask)
@@ -61,15 +72,13 @@ public class BuildingManager : MonoBehaviour
         }
     }
 
-    //Object selector from outside the script (for the UI)
+    // Building selector based on the index of the buildingsList
+    // Index = -1 for destroying preview
     public void selectedObject(int index)
     {
-        if (index >= 0) objectPreview = Instantiate(objectsList[index], targetPosition, transform.rotation);
-        else
-        {
-            // TODO: Destory the object Preview 
-            objectPreview = null;
-        }
+        Destroy(objectPreview);
+        objectPreview = null;
+        if (index >= 0 && index < objectsList.Length) objectPreview = Instantiate(objectsList[index], targetPosition, transform.rotation);
     }
 
     // Places the object into the world

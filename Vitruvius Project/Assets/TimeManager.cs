@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -5,10 +6,18 @@ public class TimeManager : MonoBehaviour
 {
     public static TimeManager Instance { get; private set; }
 
+    public int SECONDS_PER_DAY = 10;
+    public int INITIAL_YEAR = 933;  //ab urbe condita
+
     public float clock;
+    public float deltaTime;
     public int gameSpeed;
     public float baseAgentSpeed = 5f;
     private float baseAgentAcceleration = 8f;
+
+    public int day;
+    public int month;
+    public int year;  
 
     private void Awake()
     {
@@ -29,25 +38,66 @@ public class TimeManager : MonoBehaviour
     public void Start()
     {
         clock = 0f;
+        deltaTime = 0f;
         gameSpeed = 1;
+        day = 1;
+        month = 1;
+        year = INITIAL_YEAR;
         UpdateAgentSpeed();
     }
     public void Update()
     {
-        if (Input.GetKey(KeyCode.K))
+        if (Input.GetKey(KeyCode.BackQuote)) setGameSpeed(0);
+        if (Input.GetKey(KeyCode.Alpha1)) setGameSpeed(1);
+        if (Input.GetKey(KeyCode.Alpha2)) setGameSpeed(2);
+        if (Input.GetKey(KeyCode.Alpha3)) setGameSpeed(3);
+
+        updateClock();
+    }
+
+    private void updateClock()
+    {
+        deltaTime = Time.deltaTime * gameSpeed;
+        clock += deltaTime;
+
+        if(clock >= SECONDS_PER_DAY)
         {
-            gameSpeed = 1;
-            UpdateAgentSpeed();
+            clock = 0;
+            day++;
+            if(day > 30)
+            {
+                day = 1;
+                month++;
+                if(month > 12)
+                {
+                    month = 1;
+                    year++;
+                }
+            }
         }
-        if (Input.GetKey(KeyCode.L))
+    }
+
+    // Changes the agents speeds
+    private void UpdateAgentSpeed()
+    {
+        NavMeshAgent[] agents = FindObjectsByType<NavMeshAgent>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+
+        foreach (NavMeshAgent agent in agents)
         {
-            gameSpeed = 3;
-            UpdateAgentSpeed();
+            if (agent.agentTypeID == 0)  // Humanoid agent
+            {
+                agent.speed = baseAgentSpeed * gameSpeed;
+
+            }
         }
-        clock = Time.deltaTime * gameSpeed;
     }
 
     // Getters
+    public float getDeltaTime()
+    {
+        return deltaTime;
+    }
+
     public float getClock()
     {
         return clock;
@@ -74,19 +124,5 @@ public class TimeManager : MonoBehaviour
     {
         gameSpeed = 0;
         UpdateAgentSpeed();
-    }
-
-    private void UpdateAgentSpeed()
-    {
-        NavMeshAgent[] agents = FindObjectsByType<NavMeshAgent>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
-
-        foreach (NavMeshAgent agent in agents)
-        {
-            if (agent.agentTypeID == 0)  // Humanoid agent
-            {
-                agent.speed = baseAgentSpeed * gameSpeed;
-                agent.acceleration = baseAgentAcceleration * gameSpeed;
-            }
-        }
     }
 }
