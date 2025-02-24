@@ -13,7 +13,9 @@ public class TimeManager : MonoBehaviour
     public float deltaTime;
     public int gameSpeed;
     public float baseAgentSpeed = 5f;
-    private float baseAgentAcceleration = 8f;
+
+    public event Action EventSacrifice; //Special event for temples, prayers...
+    public event Action EventCircus;    //Special event for theaters, circus ...
 
     public int day;
     public int month;
@@ -53,6 +55,12 @@ public class TimeManager : MonoBehaviour
         if (Input.GetKey(KeyCode.Alpha3)) setGameSpeed(3);
 
         updateClock();
+        if(month == 6)
+        {
+            //TODO: Change condition. When month == 6, the events are triggered
+            EventCircus?.Invoke();
+            EventSacrifice?.Invoke();
+        }
     }
 
     private void updateClock()

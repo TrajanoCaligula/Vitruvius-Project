@@ -43,6 +43,11 @@ public class HumanController : MonoBehaviour
         state = State.Idle;
         timerLastChange = 0f;
         agent.acceleration = 10000f;        // Makes the speed change instantly
+
+        //Suscribe to events
+        TimeManager.Instance.EventCircus+= goToCircus;
+        TimeManager.Instance.EventCircus+= goToTemple;
+
     }
 
     void Update()
@@ -82,6 +87,12 @@ public class HumanController : MonoBehaviour
 
                 case State.Work:
                     goToWork();
+                    break;
+                case State.Pray:
+                    goToTemple();
+                    break;
+                case State.Free:
+                    goToCircus();
                     break;
             }
         }
@@ -151,6 +162,16 @@ public class HumanController : MonoBehaviour
     {
         // Check needs
         agent.SetDestination(findNeed("Well"));
+    }
+
+    private void goToCircus()
+    {
+        throw new NotImplementedException();
+    }
+
+    private void goToTemple()
+    {
+        throw new NotImplementedException();
     }
 
     // Getters
