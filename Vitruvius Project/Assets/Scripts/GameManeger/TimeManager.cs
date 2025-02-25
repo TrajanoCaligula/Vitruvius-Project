@@ -6,11 +6,11 @@ public class TimeManager : MonoBehaviour
 {
     public static TimeManager Instance { get; private set; }
 
-    public int SECONDS_PER_DAY = 10;
+    public float SECONDS_PER_DAY = 100f;
     public int INITIAL_YEAR = 933;  //ab urbe condita
 
-    public float clock;
-    public float deltaTime;
+    public float clock;             // [0-SECONDS_PER_DAY]
+    public float deltaTime;         // Deltatime*gameSpeed
     public int gameSpeed;
     public float baseAgentSpeed = 5f;
 

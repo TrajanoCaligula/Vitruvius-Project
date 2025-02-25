@@ -8,9 +8,23 @@ public class BuildingController : MonoBehaviour
 
     private bool constructionComplete = false;
 
+    public string MATERIAL_PRODUCTION = "Stone";
+    public Inventory[] inputInventory;     // Make an array for inputs and an array for outputs
+    public Inventory[] outputInventory;     
+
     void Start()
     {
-
+        /*
+        inventory[].push(new Inventory());
+        if (inventory[0] == null)
+        {
+            Debug.LogError("Inventory es null en HumanController.Start.");
+            return; // Detiene la ejecución si inventory es null
+        }
+        else
+        {
+            inventory[0].setItemFromDB(MATERIAL_PRODUCTION);
+        }*/
     }
 
     void Update()
@@ -46,4 +60,7 @@ public class BuildingController : MonoBehaviour
         //TODO
         Destroy(this);
     }
+
+    // Getters
+    public bool isStorageFull() => true;
 }

@@ -27,27 +27,54 @@ public class HumanController : MonoBehaviour
     }
     */
     public NavMeshAgent agent;
-    private State state;
+    public State state;
+    public State nextState;
 
+    // Main variables
     public GameObject home = null;
     public GameObject workPlace = null;
 
+    // Inventory
+    public int MAX_INVENTORY_QTY = 5;
+
+    // Jobs System
+    public Inventory inventory;
+    public IJobsSystem job;
+    public GameObject childGameObject;
+
+    // Click timeing
     private float fromLastClick = -1f;
     private float doubleClickRange = 0.3f;
+
+    // State machine
     public float timerLastChange;
-    private float timerStateChange = 10f; // In seconds
+    private float timerStateChange = 100f; // In seconds
+    public bool endCurrentTask = false;
 
     void Start()
     {
         // TESTING
         state = State.Idle;
+        nextState = state + 1;
         timerLastChange = 0f;
         agent.acceleration = 10000f;        // Makes the speed change instantly
 
         //Suscribe to events
-        TimeManager.Instance.EventCircus+= goToCircus;
-        TimeManager.Instance.EventCircus+= goToTemple;
+        TimeManager.Instance.EventCircus += goToCircus;
+        TimeManager.Instance.EventCircus += goToTemple;
 
+        // Inventory
+        inventory = new Inventory(); // Asegúrate de que esto se ejecute
+        if (inventory == null)
+        {
+            Debug.LogError("Inventory es null en HumanController.Start.");
+            return; // Detiene la ejecución si inventory es null
+        }
+        else
+        {
+            Debug.Log(inventory.itemName +" "+ inventory.itemQty + " "+ inventory.itemMaxQty);
+        }
+        
     }
 
     void Update()
@@ -56,11 +83,7 @@ public class HumanController : MonoBehaviour
         {
             // Time control
             timerLastChange += TimeManager.Instance.getDeltaTime();
-            if (timerLastChange >= timerStateChange)
-            {
-                timerLastChange = 0f;
-                changeState();
-            }
+            if (timerLastChange >= timerStateChange) changeState();
 
 
             if (Input.GetMouseButtonDown(1))
@@ -71,7 +94,6 @@ public class HumanController : MonoBehaviour
                     agent.SetDestination(hitInfo.point);
                 }
             }
-
             switch (state)
             {
                 case State.Idle:
@@ -88,9 +110,11 @@ public class HumanController : MonoBehaviour
                 case State.Work:
                     goToWork();
                     break;
+
                 case State.Pray:
                     goToTemple();
                     break;
+
                 case State.Free:
                     goToCircus();
                     break;
@@ -111,9 +135,15 @@ public class HumanController : MonoBehaviour
 
     public void changeState()
     {
-        State newState = (State)(((int)state + 1) % State.GetValues(typeof(State)).Length);
-        
-        state = newState;
+        nextState = (State)(((int)state + 1) % State.GetValues(typeof(State)).Length);
+        if (!endCurrentTask)
+        {
+            Debug.Log("CHANGE STATE");
+            timerLastChange = 0f;
+            state = nextState;
+
+            agent.ResetPath();
+        }
     }
 
     public bool findBuilding(string Tag)
@@ -123,8 +153,14 @@ public class HumanController : MonoBehaviour
         foreach (GameObject gameObject in taggedObjects)
         {
             if (Tag == "House") home = gameObject;
-            else if (Tag == "WorkPlace") workPlace = gameObject;
-            return true;
+            else if (Tag == "WorkPlace")
+            {
+                workPlace = gameObject;
+                job = childGameObject.AddComponent<Miner>();
+                job.setType("Stone");
+                Debug.Log(job);
+            }
+                return true;
         }
         return false;
     }
@@ -153,9 +189,20 @@ public class HumanController : MonoBehaviour
 
     public void goToWork()
     {
-        if (workPlace != null) agent.SetDestination(workPlace.transform.position);
-        else if (findBuilding("WorkPlace")) agent.SetDestination(workPlace.transform.position);
-        //else GO TO THE FORUM OR TOWN CENTER
+        if (workPlace == null || job == null) findBuilding("WorkPlace"); //TODO: QUE ES POSI AL VOLTANT DE LA LLOBA agent.SetDestination(GameObject.FindGameObjectWithTag("CityCenter").transform.position);
+        else
+        {
+            if (!job.isActive())
+            {
+                if(!agent.hasPath) agent.SetDestination(workPlace.transform.position);
+                if (getDistanceXZ(transform.position, workPlace.transform.position) <= job.getMinDistance()) job.startShift();
+            }
+            else
+            { 
+                job.working();
+            }
+
+        }
     }
 
     public void goToBuy()
@@ -172,6 +219,18 @@ public class HumanController : MonoBehaviour
     private void goToTemple()
     {
         throw new NotImplementedException();
+    }
+
+    // Distance only between axis x and z
+    public static float getDistanceXZ(Vector3 a, Vector3 b)
+    {
+
+        float diffX = Mathf.Abs(a.x - b.x);
+        float diffZ = Mathf.Abs(a.z - b.z);
+
+        float distance = Mathf.Sqrt(diffX * diffX + diffZ * diffZ);
+
+        return distance;
     }
 
     // Getters
