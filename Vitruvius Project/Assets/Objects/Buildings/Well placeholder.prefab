@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 8123047399875078959}
   - component: {fileID: 8754989597378317048}
   - component: {fileID: 360741354341560389}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Well placeholder
   m_TagString: Well
   m_Icon: {fileID: 0}
@@ -124,6 +124,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 40f9f6f856f9da344b7ff5ce7646cc32, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  MATERIAL_PRODUCTION: Stone
 --- !u!208 &360741354341560389
 NavMeshObstacle:
   m_ObjectHideFlags: 0

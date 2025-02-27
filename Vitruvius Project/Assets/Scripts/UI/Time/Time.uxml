@@ -1,0 +1,18 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <ui:VisualElement style="flex-direction: column; align-items: center; justify-content: center; background-color: rgba(0, 0, 0, 0.7); position: absolute; top: 0; left: auto; right: auto; align-content: flex-start; align-self: center; visibility: visible; display: flex; overflow: visible; width: 175px; background-image: url(&quot;project://database/Assets/Scripts/UI/Time/premium_photo-1706838707088-e3b4170054e6.jpeg?fileID=2800000&amp;guid=0c2f9dc78653dd2469910c163d8a7dd0&amp;type=3#premium_photo-1706838707088-e3b4170054e6&quot;);">
+        <ui:VisualElement style="flex-direction: row; margin-top: 0; font-size: 8px;">
+            <ui:Label text="Year: " />
+            <ui:Label text="x" name="yearLabel" />
+            <ui:Label text=" Month: " />
+            <ui:Label text="x" name="monthLabel" />
+            <ui:Label text=" Day: " />
+            <ui:Label text="x" name="dayLabel" />
+        </ui:VisualElement>
+        <ui:VisualElement style="flex-direction: row; justify-content: center; margin-bottom: 5px;">
+            <ui:Button name="pauseButton" text="0" style="width: 8px; height: 10px; margin: 1px; font-size: 8px;" />
+            <ui:Button name="speed1Button" text="1" style="width: 8px; height: 10px; margin: 1px; font-size: 8px;" />
+            <ui:Button name="speed2Button" text="2" style="width: 8px; height: 10px; margin: 1px; font-size: 8px;" />
+            <ui:Button name="speed3Button" text="3" style="width: 8px; height: 10px; margin: 1px; font-size: 8px;" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

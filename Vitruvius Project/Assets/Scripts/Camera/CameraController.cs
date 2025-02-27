@@ -1,7 +1,7 @@
 using UnityEngine;
 
 /*
- * TODO: Check comments && keyboard options for pitch rotation
+ * TODO: Check comments && terrain to stablish cam limits
  */
 public class CameraController : MonoBehaviour
 {
@@ -46,6 +46,9 @@ public class CameraController : MonoBehaviour
         yaw = transform.rotation.eulerAngles.y;
         pitch = 30f; // Ángulo inicial de inclinación
 
+        // Get main camera from gameobject (error control)
+        cameraTransform = Camera.main.transform;
+
         // Se calcula la distancia inicial de la cámara al camera rig
         cameraDistance = Vector3.Distance(cameraTransform.position, transform.position);
     }
@@ -70,25 +73,9 @@ public class CameraController : MonoBehaviour
     void HandleMovementInput()
     {
         // Mouse Change for screen limit movement
-        if (Input.GetMouseButtonDown(0))
-        {
-            Plane plane = new Plane(Vector3.up, Vector3.zero);
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (plane.Raycast(ray, out float entry))
-            {
-                dragStartPosition = ray.GetPoint(entry);
-            }
-        }
-        if (Input.GetMouseButton(0))
-        {
-            Plane plane = new Plane(Vector3.up, Vector3.zero);
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (plane.Raycast(ray, out float entry))
-            {
-                dragCurrentPosition = ray.GetPoint(entry);
-                newPosition = transform.position + dragStartPosition - dragCurrentPosition;
-            }
-        }
+        /*
+         * TODO: When mouse close to the viewport limit, move towards that direction
+         */
 
         // KeyBoard
         movementSpeed = Input.GetKey(KeyCode.LeftShift) ? fastSpeed : normalSpeed;

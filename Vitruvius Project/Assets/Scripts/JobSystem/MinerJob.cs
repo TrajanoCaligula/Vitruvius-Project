@@ -24,7 +24,7 @@ public class Miner : MonoBehaviour, IJobsSystem
     public void startShift()
     {
         isWorking = true;
-        humanController.inventory.setItemFromDB("Stone");
+        humanController.inventory.setItemFromDB(resourceName);
     }
 
     public void working()
@@ -32,6 +32,7 @@ public class Miner : MonoBehaviour, IJobsSystem
         if (humanController.inventory.isFull() || humanController.state != humanController.nextState)
         {
             handleReturnToWorkplace();
+            // Prevents citizen to change the stat before ending task
             if (humanController.state != humanController.nextState) stopShift();
         }
         else
@@ -122,4 +123,5 @@ public class Miner : MonoBehaviour, IJobsSystem
 
     // Setters
     public void setType(string resourceName) => this.resourceName = resourceName;
+
 }

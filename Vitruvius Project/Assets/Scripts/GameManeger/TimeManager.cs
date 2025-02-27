@@ -19,7 +19,10 @@ public class TimeManager : MonoBehaviour
 
     public int day;
     public int month;
-    public int year;  
+    public int year;
+
+    // UI
+    private UITime uiTimeScript;
 
     private void Awake()
     {
@@ -46,6 +49,8 @@ public class TimeManager : MonoBehaviour
         month = 1;
         year = INITIAL_YEAR;
         UpdateAgentSpeed();
+
+        uiTimeScript = GameObject.Find("UI").GetComponentInChildren<UITime>();
     }
     public void Update()
     {
@@ -70,6 +75,7 @@ public class TimeManager : MonoBehaviour
 
         if(clock >= SECONDS_PER_DAY)
         {
+            uiTimeScript.UpdateTime(day, month, year);
             clock = 0;
             day++;
             if(day > 30)
@@ -126,11 +132,13 @@ public class TimeManager : MonoBehaviour
     {
         gameSpeed = newGameSpeed;
         UpdateAgentSpeed();
+        uiTimeScript.updateButtons(newGameSpeed);
     }
 
     public void pauseGame()
     {
         gameSpeed = 0;
         UpdateAgentSpeed();
+        uiTimeScript.updateButtons(0);
     }
 }

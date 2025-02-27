@@ -23,10 +23,12 @@ public class BuildingManager : MonoBehaviour
     public float angleSnap = 10;
     [SerializeField] private float mouseSensitivity = 5f; // Factor de escala para suavizar el movimiento del mouse
 
+    private int sleectedBuilding;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-
+        layerMask = LayerMask.GetMask("Ground");
     }
 
     // Update is called once per frame
@@ -50,6 +52,11 @@ public class BuildingManager : MonoBehaviour
         else if (Input.GetKey(KeyCode.J)) selectedObject(0);
         else if (Input.GetKey(KeyCode.K)) selectedObject(1);
         else if (Input.GetKey(KeyCode.L)) selectedObject(2);
+        else if (Input.GetKey(KeyCode.C))
+        {
+            GameObject cityCenter = GameObject.FindGameObjectWithTag("CityCenter");
+            if(cityCenter == null) selectedObject(3);
+        }
 
         if (Input.GetKey(KeyCode.Escape) || Input.GetMouseButton(1)) selectedObject(-1);
         if (Input.GetKeyDown(KeyCode.LeftAlt)) snapIsActive = !snapIsActive;
@@ -76,6 +83,7 @@ public class BuildingManager : MonoBehaviour
     // Index = -1 for destroying preview
     public void selectedObject(int index)
     {
+        sleectedBuilding = index;
         Destroy(objectPreview);
         objectPreview = null;
         if (index >= 0 && index < objectsList.Length) objectPreview = Instantiate(objectsList[index], targetPosition, transform.rotation);
@@ -84,6 +92,11 @@ public class BuildingManager : MonoBehaviour
     // Places the object into the world
     private void confirmObject()
     {
+        if (sleectedBuilding == 3)
+        {
+            //city center
+            CityCenterScript.Instance.firstTimePlaced();
+        }
         objectPreview.transform.position = targetPosition;
         objectPreview = null;
     }

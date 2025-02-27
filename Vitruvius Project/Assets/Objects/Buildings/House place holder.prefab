@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1167272168672217850}
   - component: {fileID: 2622472513361761062}
   - component: {fileID: 5137653708681159002}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Sphere
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -122,7 +122,7 @@ GameObject:
   - component: {fileID: 4577339640973525796}
   - component: {fileID: 1783111526825101339}
   - component: {fileID: 5341076072539667176}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: House place holder
   m_TagString: House
   m_Icon: {fileID: 0}
@@ -231,6 +231,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 40f9f6f856f9da344b7ff5ce7646cc32, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  MATERIAL_PRODUCTION: Stone
 --- !u!208 &5341076072539667176
 NavMeshObstacle:
   m_ObjectHideFlags: 0

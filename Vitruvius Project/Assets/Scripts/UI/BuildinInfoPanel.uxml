@@ -1,0 +1,7 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns="UnityEngine.UIElements">
+    <ui:VisualElement name="panelNegro" style="position: absolute; top: 20px; right: 0; width: 200px; height: 80%; background-color: rgba(0, 0, 0, 0.8); display: none; padding: 10px;">
+        <ui:Label name="textoNumero" text="Numero: 0" style="font-size: 16px; color: white;"/>
+        <ui:Button name="addButton" text="+" style="margin-top: 10px;"/>
+        <ui:Button name="subButton" text="-" style="margin-top: 10px;"/>
+    </ui:VisualElement>
+</ui:UXML>

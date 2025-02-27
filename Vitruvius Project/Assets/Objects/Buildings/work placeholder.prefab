@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 8160808051369199236}
   - component: {fileID: 9022969056341860259}
   - component: {fileID: 8591805568661747617}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: work placeholder
   m_TagString: WorkPlace
   m_Icon: {fileID: 0}
@@ -138,3 +138,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 40f9f6f856f9da344b7ff5ce7646cc32, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  MATERIAL_PRODUCTION: Stone

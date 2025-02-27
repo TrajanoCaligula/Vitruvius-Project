@@ -54,14 +54,14 @@ public class HumanController : MonoBehaviour
     void Start()
     {
         // TESTING
-        state = State.Idle;
-        nextState = state + 1;
+        state = State.Free;
+        nextState = state;
         timerLastChange = 0f;
         agent.acceleration = 10000f;        // Makes the speed change instantly
 
         //Suscribe to events
-        TimeManager.Instance.EventCircus += goToCircus;
-        TimeManager.Instance.EventCircus += goToTemple;
+        TimeManager.Instance.EventCircus += freeState;
+        TimeManager.Instance.EventCircus += prayState;
 
         // Inventory
         inventory = new Inventory(); // Asegúrate de que esto se ejecute
@@ -100,23 +100,23 @@ public class HumanController : MonoBehaviour
                     break;
 
                 case State.Rest:
-                    goToHouse();
+                    restState();
                     break;
 
                 case State.Buy:
-                    goToBuy();
+                    buyState();
                     break;
 
                 case State.Work:
-                    goToWork();
+                    workState();
                     break;
 
                 case State.Pray:
-                    goToTemple();
+                    prayState();
                     break;
 
                 case State.Free:
-                    goToCircus();
+                    freeState();
                     break;
             }
         }
@@ -136,14 +136,99 @@ public class HumanController : MonoBehaviour
     public void changeState()
     {
         nextState = (State)(((int)state + 1) % State.GetValues(typeof(State)).Length);
+        // Change state if citizens ended their task
         if (!endCurrentTask)
         {
-            Debug.Log("CHANGE STATE");
             timerLastChange = 0f;
             state = nextState;
 
             agent.ResetPath();
         }
+    }
+
+    // Jobs
+    public void workState()
+    {
+        // If has no job go to City Center
+        if (workPlace == null)
+        {
+            if (!agent.hasPath) agent.SetDestination(CityCenterScript.Instance.getRandomPositionAround());
+        }
+        else
+        {
+            // Job not started: go to the job
+            if (!job.isActive())
+            {
+                if (!agent.hasPath) agent.SetDestination(workPlace.transform.position);
+                if (getDistanceXZ(transform.position, workPlace.transform.position) <= job.getMinDistance()) job.startShift();
+            }
+            // Keep working
+            else
+            {
+                job.working();
+            }
+
+        }
+    }
+
+    public void addJobAndScript()
+    {
+        GameObject newJob = new GameObject("Job");
+        newJob.transform.SetParent(transform);
+
+        string type = workPlace.GetComponent<BuildingController>().MATERIAL_PRODUCTION;
+
+        if (string.IsNullOrEmpty(type))
+        {
+            Debug.LogError("MATERIAL_PRODUCTION is empty or null.");
+            Destroy(newJob); // Cleanup created GameObject
+            return; // Exit if MATERIAL_PRODUCTION is invalid
+        }
+
+        switch (type)
+        {
+            case "Stone":
+                // Sets miner and changes the citizine from uneployed to employed list
+                setMiner(newJob, type);
+                break;
+            default:
+                Debug.LogWarning($"Unknown material type: {type}. No job created.");
+                Destroy(newJob); // Cleanup created GameObject
+                break;
+        }
+    }
+
+    public void setMiner(GameObject jobObject, string type)
+    {
+        Miner minerComponent = jobObject.AddComponent<Miner>();
+        minerComponent.setType(type);
+
+        job = minerComponent;
+        GameManager.instance.fromUnemployedToEmployed(this.gameObject);
+        workPlace.GetComponent<BuildingController>().addWorker();
+    }
+
+    // Housing
+    public void restState()
+    {
+        if (home == null)
+        {
+            if (findHome()) agent.SetDestination(home.transform.position);
+            else if (!agent.hasPath) agent.SetDestination(CityCenterScript.Instance.getRandomPositionAround());
+        }
+    }
+
+
+    public bool findHome()
+    {
+        GameObject[] taggedObjects = GameObject.FindGameObjectsWithTag("House");
+        
+        foreach (GameObject gameObject in taggedObjects)
+        {
+            home = gameObject;
+            return true;
+        }
+        return false;
     }
 
     public bool findBuilding(string Tag)
@@ -153,14 +238,7 @@ public class HumanController : MonoBehaviour
         foreach (GameObject gameObject in taggedObjects)
         {
             if (Tag == "House") home = gameObject;
-            else if (Tag == "WorkPlace")
-            {
-                workPlace = gameObject;
-                job = childGameObject.AddComponent<Miner>();
-                job.setType("Stone");
-                Debug.Log(job);
-            }
-                return true;
+            return true;
         }
         return false;
     }
@@ -180,43 +258,18 @@ public class HumanController : MonoBehaviour
         return new Vector3(Mathf.Infinity, Mathf.Infinity, Mathf.Infinity); ;
     }
 
-    public void goToHouse()
-    {
-        if (home != null) agent.SetDestination(home.transform.position);
-        else if(findBuilding("House")) agent.SetDestination(home.transform.position);
-        //else GO TO THE FORUM OR TOWN CENTER
-    }
-
-    public void goToWork()
-    {
-        if (workPlace == null || job == null) findBuilding("WorkPlace"); //TODO: QUE ES POSI AL VOLTANT DE LA LLOBA agent.SetDestination(GameObject.FindGameObjectWithTag("CityCenter").transform.position);
-        else
-        {
-            if (!job.isActive())
-            {
-                if(!agent.hasPath) agent.SetDestination(workPlace.transform.position);
-                if (getDistanceXZ(transform.position, workPlace.transform.position) <= job.getMinDistance()) job.startShift();
-            }
-            else
-            { 
-                job.working();
-            }
-
-        }
-    }
-
-    public void goToBuy()
+    public void buyState()
     {
         // Check needs
         agent.SetDestination(findNeed("Well"));
     }
 
-    private void goToCircus()
+    private void freeState()
     {
         throw new NotImplementedException();
     }
 
-    private void goToTemple()
+    private void prayState()
     {
         throw new NotImplementedException();
     }
